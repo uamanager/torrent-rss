@@ -13,7 +13,7 @@ const $_logger = new Logger('RutorFeed');
  */
 export class RutorFeed extends BaseFeed {
   static type = 'rutor';
-  static url = 'https://rutor.info/browse';
+  static baseUrl = 'https://rutor.info';
 
   static _months = new Map([
     ['Янв', 0],
@@ -80,7 +80,8 @@ export class RutorFeed extends BaseFeed {
           return;
         }
 
-        const _downloadLink = $(el).find('.downgif').first().attr('href');
+        const _downloadUrl = $(el).find('.downgif').first().attr('href');
+        const _detailsUrl = $(el).find('td>a:nth-child(3)').first().attr('href');
         const _date = $(el).find('td').first().text().trim();
         const _title = $(el).find('td:nth-child(2)').first().text().trim();
         const _size = $(el).find('td[align="right"]').text().trim();
@@ -93,7 +94,8 @@ export class RutorFeed extends BaseFeed {
           _seeders,
           _peers,
           this._parseDate(_date),
-          _downloadLink,
+          `https:${_downloadUrl}`,
+          `${RutorFeed.baseUrl}/${_detailsUrl}`,
         ));
       });
 
@@ -126,7 +128,7 @@ export class RutorFeed extends BaseFeed {
     const _categoryNum = RutorFeed._categories.get(_category);
     const _sortByNum = RutorFeed._sortBy.get(_sortBy);
 
-    return `${RutorFeed.url}/${_page}/${_categoryNum}/0/${_sortByNum}`;
+    return `${RutorFeed.baseUrl}/browse/${_page}/${_categoryNum}/0/${_sortByNum}`;
   }
 
   /**
