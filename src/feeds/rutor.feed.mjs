@@ -84,7 +84,7 @@ export class RutorFeed extends BaseFeed {
         const _detailsUrl = $(el).find('td>a:nth-child(3)').first().attr('href');
         const _date = $(el).find('td').first().text().trim();
         const _title = $(el).find('td:nth-child(2)').first().text().trim();
-        const _size = $(el).find('td[align="right"]').text().trim();
+        const _size = $(el).find('td[align="right"]').last().text().trim();
         const _seeders = $(el).find('.green').first().text().trim();
         const _peers = $(el).find('.red').first().text().trim();
 
@@ -140,10 +140,10 @@ export class RutorFeed extends BaseFeed {
   _convertToBytes(sizeStr) {
     const _units = {
       B: 1,
-      KB: 1024,
-      MB: 1024 ** 2,
-      GB: 1024 ** 3,
-      TB: 1024 ** 4,
+      KB: 1000,
+      MB: 1000 ** 2,
+      GB: 1000 ** 3,
+      TB: 1000 ** 4,
     };
 
     const _match = sizeStr.match(/([\d.]+)\s?(B|KB|MB|GB|TB)/i);
