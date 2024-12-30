@@ -65,11 +65,6 @@ export function getRss($_app, $_feeds) {
             url: item.downloadUrl,
             size: item.size,
           },
-          custom_elements: [
-            {
-              pubDate: item.date,
-            },
-          ],
         });
       });
 
