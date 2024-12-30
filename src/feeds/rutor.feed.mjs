@@ -3,6 +3,8 @@ import axios from 'axios';
 import { load } from 'cheerio';
 import { FeedItem } from '../common/feed-item.mjs';
 import { Logger } from '../common/logger.mjs';
+import { MONTHS } from '../common/months.mjs';
+import { convertToBytes } from '../common/convert-to-bytes.mjs';
 
 const $_logger = new Logger('RutorFeed');
 
@@ -14,21 +16,6 @@ const $_logger = new Logger('RutorFeed');
 export class RutorFeed extends BaseFeed {
   static type = 'rutor';
   static baseUrl = 'https://rutor.info';
-
-  static _months = new Map([
-    ['Янв', 0],
-    ['Фев', 1],
-    ['Мар', 2],
-    ['Апр', 3],
-    ['Май', 4],
-    ['Июн', 5],
-    ['Июл', 6],
-    ['Авг', 7],
-    ['Сен', 8],
-    ['Окт', 9],
-    ['Ноя', 10],
-    ['Дек', 11],
-  ]);
 
   static _categories = new Map([
     ['any', 0],
@@ -90,7 +77,7 @@ export class RutorFeed extends BaseFeed {
 
         _torrents.push(new FeedItem(
           _title,
-          this._convertToBytes(_size),
+          convertToBytes(_size),
           _seeders,
           _peers,
           this._parseDate(_date),
@@ -125,38 +112,10 @@ export class RutorFeed extends BaseFeed {
     const _category = query.category ?? 'any';
     const _sortBy = query.sortBy ?? 'date-desc';
 
-    const _categoryNum = RutorFeed._categories.get(_category);
-    const _sortByNum = RutorFeed._sortBy.get(_sortBy);
+    const _categoryNum = RutorFeed._categories.get(_category) ?? 0;
+    const _sortByNum = RutorFeed._sortBy.get(_sortBy) ?? 0;
 
     return `${RutorFeed.baseUrl}/browse/${_page}/${_categoryNum}/0/${_sortByNum}`;
-  }
-
-  /**
-   * Parse size
-   * @param {string} sizeStr Size string
-   * @returns {number}
-   * @private
-   */
-  _convertToBytes(sizeStr) {
-    const _units = {
-      B: 1,
-      KB: 1000,
-      MB: 1000 ** 2,
-      GB: 1000 ** 3,
-      TB: 1000 ** 4,
-    };
-
-    const _match = sizeStr.match(/([\d.]+)\s?(B|KB|MB|GB|TB)/i);
-    if (!_match) {
-      const _error = new Error(`Invalid size string: ${sizeStr}`);
-      $_logger.error(_error);
-      throw _error;
-    }
-
-    const _value = parseFloat(_match[1]);
-    const _unit = _match[2].toUpperCase();
-
-    return Math.round(_value * _units[_unit]);
   }
 
   /**
@@ -169,7 +128,16 @@ export class RutorFeed extends BaseFeed {
     const [day, monthStr, yearStr] = dateStr.replace(/\s/g, ' ').split(' ');
 
     const _dayNum = parseInt(day, 10);
-    const _monthNum = RutorFeed._months.get(monthStr);
+    const _monthNum = MONTHS.get(monthStr);
+
+    if (_monthNum === undefined) {
+      const _error = new Error(`Invalid month string: ${monthStr}`);
+      $_logger.error(_error, {
+        date: dateStr,
+      });
+      throw _error;
+    }
+
     const _yearNum = parseInt(yearStr, 10) + 2000;
 
     return new Date(_yearNum, _monthNum, _dayNum);
