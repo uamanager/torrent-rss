@@ -4,7 +4,7 @@ import { RutorFeed } from './feeds/rutor.feed.mjs';
 import { Logger } from './common/logger.mjs';
 
 const PROTOCOL = process.env.PROTOCOL || 'http';
-const HOST = process.env.HOST || 'localhost';
+const HOST = process.env.HOST || '0.0.0.0';
 const PORT = process.env.PORT || 3000;
 
 const $_logger = new Logger('Bootstrap');
