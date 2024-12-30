@@ -58,17 +58,14 @@ export function getRss($_app, $_feeds) {
 
           date: item.date,
           guid: item.detailsUrl,
-          url: `${item.downloadUrl}?url`,
+          url: item.detailsUrl,
 
           enclosure: {
             type: 'application/x-bittorrent',
-            url: `${item.downloadUrl}?enclosure`,
+            url: item.downloadUrl,
             size: item.size,
           },
           custom_elements: [
-            {
-              link: `${item.downloadUrl}?link`,
-            },
             {
               pubDate: item.date,
             },
