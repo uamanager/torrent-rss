@@ -43,8 +43,8 @@ export function getRss($_app, $_feeds) {
     });
 
     const _feed = new RSS({
-      title: `Announcement Feed - ${_feedQuery}`,
-      description: `Announcement Feed - ${_feedQuery}`,
+      title: `Announcement Feed - ${JSON.stringify(req.query)}`,
+      description: `Announcement Feed - ${JSON.stringify(req.query)}`,
       feed_url: req.originalUrl,
       site_url: req.originalUrl,
       language: 'en-us',
