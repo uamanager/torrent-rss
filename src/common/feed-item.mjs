@@ -3,10 +3,18 @@
  * @class FeedItem
  */
 export class FeedItem {
-  constructor(title, description, date, guid) {
+  constructor(
+    title,
+    size,
+    seeders,
+    peers,
+    date,
+    url
+  ) {
     this.title = title;
-    this.description = description;
-    this.date = date;
-    this.guid = guid;
+    this.description = `[${seeders}/${peers}] ${title}`;
+    this.date = date.toISOString();
+    this.url = url;
+    this.size = size;
   }
 }

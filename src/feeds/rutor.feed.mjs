@@ -83,23 +83,29 @@ export class RutorFeed extends BaseFeed {
         const _downloadLink = $(el).find('.downgif').first().attr('href');
         const _date = $(el).find('td').first().text().trim();
         const _title = $(el).find('td:nth-child(2)').first().text().trim();
-        const _size = $(el).find('.right').first().text().trim();
+        const _size = $(el).find('td[align="right"]').text().trim();
         const _seeders = $(el).find('.green').first().text().trim();
         const _peers = $(el).find('.red').first().text().trim();
 
         _torrents.push(new FeedItem(
           _title,
-          `[${_seeders}/${_peers}] ${_title} - ${_size}`,
+          this._convertToBytes(_size),
+          _seeders,
+          _peers,
           this._parseDate(_date),
           _downloadLink,
         ));
       });
 
-      $_logger.info(`Found ${_torrents.length} torrents`);
+      $_logger.info(`Found ${_torrents.length} torrents`, {
+        query: query,
+      });
 
       return _torrents;
     } catch (error) {
-      $_logger.error(error);
+      $_logger.error(error, {
+        query: query,
+      });
       return Promise.reject(error);
     }
   }
@@ -121,6 +127,34 @@ export class RutorFeed extends BaseFeed {
     const _sortByNum = RutorFeed._sortBy.get(_sortBy);
 
     return `${RutorFeed.url}/${_page}/${_categoryNum}/0/${_sortByNum}`;
+  }
+
+  /**
+   * Parse size
+   * @param {string} sizeStr Size string
+   * @returns {number}
+   * @private
+   */
+  _convertToBytes(sizeStr) {
+    const _units = {
+      B: 1,
+      KB: 1024,
+      MB: 1024 ** 2,
+      GB: 1024 ** 3,
+      TB: 1024 ** 4,
+    };
+
+    const _match = sizeStr.match(/([\d.]+)\s?(B|KB|MB|GB|TB)/i);
+    if (!_match) {
+      const _error = new Error(`Invalid size string: ${sizeStr}`);
+      $_logger.error(_error);
+      throw _error;
+    }
+
+    const _value = parseFloat(_match[1]);
+    const _unit = _match[2].toUpperCase();
+
+    return Math.round(_value * _units[_unit]);
   }
 
   /**
