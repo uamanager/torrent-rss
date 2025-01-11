@@ -1,38 +1,25 @@
-import express from 'express';
-import { getRss } from './api/rss.api.mjs';
-import { RutorFeed } from './feeds/rutor.feed.mjs';
 import { Logger } from './common/logger.mjs';
+import {
+  App,
+  APP_SERVER_HOST_DEFAULT,
+  APP_SERVER_PORT_DEFAULT,
+  APP_SERVER_PROTOCOL_DEFAULT,
+} from './common/server/server.mjs';
+import { GetRssRoute } from './routes/rss.route.mjs';
 
-const PROTOCOL = process.env.PROTOCOL || 'http';
-const HOST = process.env.HOST || '0.0.0.0';
-const PORT = process.env.PORT || 3000;
+const PROTOCOL = process.env.PROTOCOL ?? APP_SERVER_PROTOCOL_DEFAULT;
+const HOST = process.env.HOST ?? APP_SERVER_HOST_DEFAULT;
+const PORT = +(process.env.PORT ?? APP_SERVER_PORT_DEFAULT);
 
 const $_logger = new Logger('Bootstrap');
 
-export function bootstrap() {
-  return new Promise((resolve, reject) => {
-    try {
-      $_logger.info('Bootstrapping server...');
+export async function bootstrap() {
+  try {
+    App.route(new GetRssRoute());
 
-      const FEEDS = {
-        ...RutorFeed.init(),
-      };
-
-      const $_app = express();
-
-      getRss($_app, new Map(Object.entries(FEEDS)));
-
-      $_app.listen(PORT, HOST, () => {
-        $_logger.info(`Successfully bootstrapped server!`);
-        resolve({
-          protocol: PROTOCOL,
-          host: HOST,
-          port: PORT,
-        });
-      });
-    } catch (error) {
-      $_logger.error(error);
-      reject(error);
-    }
-  });
+    return await App.bootstrap(PROTOCOL, HOST, PORT);
+  } catch (error) {
+    $_logger.error(error);
+    return Promise.reject(error);
+  }
 }

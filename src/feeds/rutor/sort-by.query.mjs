@@ -1,0 +1,23 @@
+export const RUTOR_SORT_BY_QUERY_DATE_DESC = 'date-desc';
+export const RUTOR_SORT_BY_QUERY_DATE_ASC = 'date-asc';
+export const RUTOR_SORT_BY_QUERY_SEEDERS_DESC = 'seeders-desc';
+export const RUTOR_SORT_BY_QUERY_SEEDERS_ASC = 'seeders-asc';
+export const RUTOR_SORT_BY_QUERY_PEERS_DESC = 'peers-desc';
+export const RUTOR_SORT_BY_QUERY_PEERS_ASC = 'peers-asc';
+export const RUTOR_SORT_BY_QUERY_TITLE_DESC = 'title-desc';
+export const RUTOR_SORT_BY_QUERY_TITLE_ASC = 'title-asc';
+export const RUTOR_SORT_BY_QUERY_SIZE_DESC = 'size-desc';
+export const RUTOR_SORT_BY_QUERY_SIZE_ASC = 'size-asc';
+
+export const RUTOR_SORT_BY_QUERY = new Map([
+  [RUTOR_SORT_BY_QUERY_DATE_DESC, 0],
+  [RUTOR_SORT_BY_QUERY_DATE_ASC, 1],
+  [RUTOR_SORT_BY_QUERY_SEEDERS_DESC, 2],
+  [RUTOR_SORT_BY_QUERY_SEEDERS_ASC, 3],
+  [RUTOR_SORT_BY_QUERY_PEERS_DESC, 4],
+  [RUTOR_SORT_BY_QUERY_PEERS_ASC, 5],
+  [RUTOR_SORT_BY_QUERY_TITLE_DESC, 6],
+  [RUTOR_SORT_BY_QUERY_TITLE_ASC, 7],
+  [RUTOR_SORT_BY_QUERY_SIZE_DESC, 8],
+  [RUTOR_SORT_BY_QUERY_SIZE_ASC, 9],
+]);

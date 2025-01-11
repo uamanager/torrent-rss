@@ -1,41 +1,52 @@
+import { pino } from 'pino';
+
+/**
+ * Logger
+ * @class Logger
+ */
 export class Logger {
-  constructor(context = '') {
-    this.context = context;
-  }
+  static _logger = pino({
+    transport: {
+      target: 'pino-pretty',
+      options: {
+        colorize: true,
+        translateTime: 'dd-mm-yyyy HH:MM:ss',
+      },
+    },
+  });
 
   /**
-   * Log message
-   * @param {string} message Message
-   * @param {any?} data Additional data
+   * Initialize logger
+   * @param {string?} name Logger namespace
    */
-  log(message, data = {}) {
-    console.log(`[${this.context}]:`, message, data);
+  constructor(name = 'Main') {
+    this.logger = Logger._logger.child({ name });
   }
 
   /**
    * Log info
-   * @param {string} message Message
-   * @param {any?} data Additional data
+   * @param {string} msg Message
+   * @param {object?} data Additional data
    */
-  info(message, data = {}) {
-    console.info(`[${this.context}]:`, message, data);
+  info(msg, data = {}) {
+    this.logger.info({ msg, ...data });
   }
 
   /**
    * Log warning
-   * @param {string} message Message
-   * @param {any?} data Additional data
+   * @param {string} msg Message
+   * @param {object?} data Additional data
    */
-  warn(message, data = {}) {
-    console.warn(`[${this.context}]:`, message, data);
+  warn(msg, data = {}) {
+    this.logger.warn({ msg, ...data });
   }
 
   /**
    * Log error
-   * @param {Error} error Error
-   * @param {any?} data Additional data
+   * @param {Error} err Error
+   * @param {object?} data Additional data
    */
-  error(error, data = {}) {
-    console.error(`[${this.context}]:`, error.name, ':', error.message, data, '\n', error.stack);
+  error(err, data = {}) {
+    this.logger.error({ err, ...data });
   }
 }
